@@ -144,7 +144,13 @@ with st.sidebar:
 
 # 이미지 함수
 def get_font(size):
-    """시스템별 한글 폰트 로드 (Windows, macOS, Linux/Streamlit Cloud)"""
+    """시스템별 한글 폰트 로드 (저장소 내 직접 업로드 폰트 우선)"""
+    # 1. 만약 유저가 malgunbd.ttf 파일을 직접 업로드했다면 그것을 최우선 사용
+    try:
+        return ImageFont.truetype("malgunbd.ttf", size)
+    except:
+        pass
+
     system = platform.system()
     try:
         if system == "Windows":
@@ -152,12 +158,12 @@ def get_font(size):
         elif system == "Darwin": # macOS
             return ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", size)
         else: # Linux (Streamlit Cloud)
-            # NanumGothic은 packages.txt에 fonts-nanum 추가 시 설치됨
+            # 리눅스 시스템 폰트 경로들 탐색
             paths = [
                 "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
-                "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
-                "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-                "DejaVuSans.ttf"
+                "/usr/share/fonts/truetype/nanum/NanumGothic.ttf", 
+                "/usr/share/fonts/nanum/NanumGothicBold.ttf",
+                "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"
             ]
             for path in paths:
                 try: return ImageFont.truetype(path, size)

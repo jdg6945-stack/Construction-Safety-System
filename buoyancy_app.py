@@ -143,12 +143,36 @@ with st.sidebar:
         unit_c = st.number_input("콘크리트 중량(kN/m³)", value=24.0)
 
 # 이미지 함수
+def get_font(size):
+    """시스템별 한글 폰트 로드 (Windows, macOS, Linux/Streamlit Cloud)"""
+    system = platform.system()
+    try:
+        if system == "Windows":
+            return ImageFont.truetype("malgunbd.ttf", size)
+        elif system == "Darwin": # macOS
+            return ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", size)
+        else: # Linux (Streamlit Cloud)
+            # NanumGothic은 packages.txt에 fonts-nanum 추가 시 설치됨
+            paths = [
+                "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf",
+                "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+                "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+                "DejaVuSans.ttf"
+            ]
+            for path in paths:
+                try: return ImageFont.truetype(path, size)
+                except: continue
+            return ImageFont.load_default()
+    except:
+        return ImageFont.load_default()
+
 def overlay_text(img_path, measurements):
     try: img = Image.open(img_path).convert("RGB")
     except Exception: img = Image.new("RGB", (1000, 800), color=(220, 220, 220))
     draw = ImageDraw.Draw(img)
-    try: font = ImageFont.truetype("malgunbd.ttf", 45) if platform.system() == "Windows" else ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", 45)
-    except Exception: font = ImageFont.load_default()
+    
+    font = get_font(45)
+    
     for pos, val, is_vertical in measurements:
         text = f"{val:,}"; tw, th = draw.textbbox((0, 0), text, font=font)[2:4]; padding = 12; x, y = pos
         if is_vertical:
@@ -156,7 +180,6 @@ def overlay_text(img_path, measurements):
             ImageDraw.Draw(txt_img).text((padding, padding), text, fill="black", font=font)
             rotated = txt_img.rotate(90, expand=True); img.paste(rotated, (x-rotated.width//2, y-rotated.height//2), rotated)
         else:
-            # 배경은 흰색으로 하되 테두리는 없이 출력
             draw.rectangle([x-tw//2-padding, y-th//2-padding, x+tw//2+padding, y+th//2+padding], fill="white")
             draw.text((x, y), text, fill="black", font=font, anchor="mm")
     return img
@@ -183,8 +206,7 @@ def draw_dynamic_section(h_soil, floor_heights, fd, gl_minus):
     
     try: font_size = 18 if num_f <= 2 else (16 if num_f <= 4 else 14)
     except: font_size = 15
-    try: font = ImageFont.truetype("malgunbd.ttf", font_size * scale) if platform.system() == "Windows" else ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", (font_size-2) * scale)
-    except: font = ImageFont.load_default()
+    font = get_font(font_size * scale)
     
     gl_y = top_margin
     draw.line([(30 * scale, gl_y), (320 * scale, gl_y)], fill="black", width=2 * scale)

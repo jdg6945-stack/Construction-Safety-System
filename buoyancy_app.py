@@ -11,45 +11,102 @@ st.set_page_config(layout="wide", page_title="시공단계 부력 검토")
 st.markdown(
     """
     <style>
-    div[data-baseweb="input"] { background-color: #f1f3f5 !important; border: none !important; }
-    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { 
-        -webkit-appearance: none; margin: 0; 
+    /* 전체 글꼴 크기 축소 */
+    html, body, [class*="css"], .stMarkdown {
+        font-size: 13px !important;
     }
-    input[type=number] { -moz-appearance: textfield; }
-    .stNumberInput { margin-bottom: -15px !important; }
+    
+    /* 상단 여백 최소화 */
+    .block-container {
+        padding-top: 1.0rem !important;
+        padding-bottom: 0rem !important;
+    }
+    [data-testid="stSidebarNav"] { padding-top: 0.5rem !important; }
+    
+    /* 입력창 및 타이틀 크기 축소 */
+    h1 { font-size: 1.4rem !important; margin-bottom: 0.4rem !important; padding: 0 !important; }
+    h2 { font-size: 1.1rem !important; margin-top: 0.8rem !important; margin-bottom: 0.4rem !important; }
+    h3 { font-size: 0.95rem !important; margin-bottom: 0.3rem !important; }
+    
+    /* 입력창 디자인 - 바탕 흰색 및 회색 테두리 적용 */
+    div[data-baseweb="input"], [data-baseweb="base-input"], div[data-baseweb="number-input"] { 
+        background-color: #ffffff !important; 
+        border: 1px solid #ddd !important; 
+        border-radius: 4px !important;
+        box-shadow: none !important;
+        min-height: 26px !important;
+        height: auto !important;
+    }
+    /* 탭 하단 선 제거 */
+    div[data-baseweb="tab-highlight"] { display: none !important; }
+    div[data-baseweb="tab-list"] { border-bottom: none !important; }
+    input[type=number] { 
+        -moz-appearance: textfield; 
+        font-size: 12px !important; 
+        padding: 4px 8px !important;
+    }
+    
+    /* 라벨 관련 스타일 - 겹침 방지 */
+    div[data-testid="stWidgetLabel"] p {
+        font-size: 11.5px !important;
+        margin-bottom: 2px !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* 요소 간격 조절 - 음수 마진 제거 및 최적화 */
+    .stNumberInput { margin-bottom: 2px !important; }
+    .stCheckbox { margin-bottom: 2px !important; }
+    div[data-testid="stVerticalBlock"] > div { border: none !important; gap: 0.2rem !important; }
+    
+    /* 사이드바 여백 축소 */
+    div[data-testid="stSidebar"] div[data-testid="stVerticalBlock"] { gap: 0.1rem !important; }
+    hr { margin: 0.5rem 0 !important; }
+    
     .sub-title { 
-        background-color: #4A5568; color: white; padding: 5px 12px; border-radius: 5px; 
-        font-weight: bold; margin-top: 10px; margin-bottom: 5px; font-size: 14px; 
+        background-color: #4A5568; color: white; padding: 2px 8px; border-radius: 4px; 
+        font-weight: bold; margin-top: 3px; margin-bottom: 2px; font-size: 11px; 
     }
     .section-title { 
-        color: #2D3748; border-bottom: 2px solid #2D3748; padding-bottom: 5px; 
-        margin-top: 50px; margin-bottom: 20px; font-weight: bold; font-size: 20px;
+        color: #2D3748; border-bottom: 1.5px solid #2D3748; padding-bottom: 2px; 
+        margin-top: 8px; margin-bottom: 6px; font-weight: bold; font-size: 14.5px;
     }
     .result-container-ok { 
-        background-color: #1976d2; color: white; padding: 12px; border-radius: 8px; 
-        text-align: center; font-size: 20px; font-weight: bold; margin: 15px 0; 
+        background-color: #1976d2; color: white; padding: 8px; border-radius: 6px; 
+        text-align: center; font-size: 16px; font-weight: bold; margin: 8px 0; 
     }
     .result-container-ng { 
-        background-color: #d32f2f; color: white; padding: 12px; border-radius: 8px; 
-        text-align: center; font-size: 20px; font-weight: bold; margin: 15px 0; 
+        background-color: #d32f2f; color: white; padding: 8px; border-radius: 6px; 
+        text-align: center; font-size: 16px; font-weight: bold; margin: 8px 0; 
     }
-    /* 테이블 열 너비 최적화: 수식 공간 극대화 및 겹침 방지 */
-    div[data-testid="stTable"] table { width: 100% !important; table-layout: fixed !important; border-collapse: collapse !important; border: 1px solid #ddd !important; }
-    div[data-testid="stTable"] th, div[data-testid="stTable"] td { white-space: nowrap !important; padding: 8px 12px !important; font-size: 13px !important; border: 1px solid #eee !important; }
-    div[data-testid="stTable"] th { background-color: #f8f9fa !important; color: #333 !important; }
+    
+    /* 메트릭(결과 수치) 크기 축소 */
+    div[data-testid="stMetricValue"] { font-size: 1.4rem !important; font-weight: bold !important; }
+    div[data-testid="stMetricLabel"] { font-size: 0.8rem !important; }
+    
+    /* 탭 스타일 조정 */
+    button[data-baseweb="tab"] { padding: 4px 12px !important; font-size: 12px !important; }
+    
+    /* 테이블 열 너비 및 텍스트 최적화 */
+    div[data-testid="stTable"] table { width: 100% !important; border: 1px solid #ddd !important; }
+    div[data-testid="stTable"] th, div[data-testid="stTable"] td { padding: 4px 6px !important; font-size: 11px !important; border: 1px solid #eee !important; }
     
     div[data-testid="stTable"] th:nth-child(1), div[data-testid="stTable"] td:nth-child(1) { display: none !important; }
-    div[data-testid="stTable"] th:nth-child(2), div[data-testid="stTable"] td:nth-child(2) { width: 130px !important; background-color: #fdfdfd; }
-    div[data-testid="stTable"] th:nth-child(3), div[data-testid="stTable"] td:nth-child(3) { width: auto !important; overflow: visible !important; }
-    div[data-testid="stTable"] th:nth-child(4), div[data-testid="stTable"] td:nth-child(4) { width: 110px !important; text-align: right !important; font-weight: bold; }
+    div[data-testid="stTable"] th:nth-child(2), div[data-testid="stTable"] td:nth-child(2) { width: 110px !important; background-color: #fdfdfd; }
+    div[data-testid="stTable"] th:nth-child(4), div[data-testid="stTable"] td:nth-child(4) { width: 95px !important; text-align: right !important; font-weight: bold; }
 
-    /* PDF 출력용 CSS (버튼 클릭 시에만 의미 있음) */
+    /* 이미지 중앙 정렬 */
+    [data-testid="stImage"] {
+        display: flex !important;
+        justify-content: center !important;
+    }
+    [data-testid="stImage"] img {
+        margin: 0 auto !important;
+    }
+
     @media print {
-        @page { size: A4; margin: 10mm; }
+        @page { size: A4; margin: 8mm; }
         .no-print { display: none !important; }
         .print-only { display: block !important; }
-        div[data-testid="stExpander"] { border: none !important; }
-        div[data-testid="stExpander"] > div:first-child { display: none !important; }
     }
     .print-only { display: none; }
     </style>
@@ -60,27 +117,30 @@ st.markdown(
 # 1. 사이드바 설정
 with st.sidebar:
     st.header("📍 검토 설정")
-    num_floors = st.number_input("검토 층수(기초 제외)", min_value=1, max_value=10, value=2)
+    num_floors = st.number_input("검토 층수(기초 포함)", min_value=1, max_value=10, value=2)
     st.divider()
 
-    with st.expander("1. 기본 정보 (단위면적)", expanded=True):
+    sidebar_tabs = st.tabs(["기본", "단면", "수위"])
+    
+    with sidebar_tabs[0]:
         x_dist = st.number_input("X방향 길이 (mm)", value=8200)
         y_dist = st.number_input("Y방향 길이 (mm)", value=8200)
         area = (x_dist * y_dist) / 10**6
 
-    with st.expander("2. 단면 정보 (층고 설정)", expanded=True):
+    with sidebar_tabs[1]:
         h_soil = st.number_input("흙 높이 (mm)", value=1200)
         floor_heights = []
         for i in range(num_floors):
             h = st.number_input(
-                f"지하 {i+1}층 층고 (mm)", value=4050 if i == 0 else 5380, key=f"h_{i}"
+                f"B{i+1}F 층고 (mm)", value=4050 if i == 0 else 5380, key=f"h_{i}"
             )
             floor_heights.append(h)
+        fd = st.number_input("기초 두께(mm)", value=900, key="sidebar_fd")
 
-    with st.expander("3. 수위 및 단위중량", expanded=True):
-        gl_minus = st.number_input("지하수위 (GL - m)", value=2.35)
+    with sidebar_tabs[2]:
+        gl_minus = st.number_input("지하수위(GL-m)", value=2.35)
         target_fs = st.number_input("목표 안전율", value=1.2)
-        unit_c = st.number_input("콘크리트 단위중량 (kN/m³)", value=24.0)
+        unit_c = st.number_input("콘크리트 중량(kN/m³)", value=24.0)
 
 # 이미지 함수
 def overlay_text(img_path, measurements):
@@ -96,27 +156,99 @@ def overlay_text(img_path, measurements):
             ImageDraw.Draw(txt_img).text((padding, padding), text, fill="black", font=font)
             rotated = txt_img.rotate(90, expand=True); img.paste(rotated, (x-rotated.width//2, y-rotated.height//2), rotated)
         else:
-            draw.rectangle([x-tw//2-padding, y-th//2-padding, x+tw//2+padding, y+th//2+padding], fill="white", outline="#333333", width=2)
+            # 배경은 흰색으로 하되 테두리는 없이 출력
+            draw.rectangle([x-tw//2-padding, y-th//2-padding, x+tw//2+padding, y+th//2+padding], fill="white")
             draw.text((x, y), text, fill="black", font=font, anchor="mm")
     return img
 
-st.title("️시공단계 부력 검토")
+def draw_dynamic_section(h_soil, floor_heights, fd, gl_minus):
+    # 해상도 고정 및 배율 조정 (지하 2층 기준 높이로 고정)
+    scale = 2
+    img_h = 420 * scale  # 전체 높이 고정 (레이아웃 고정용)
+    img_w = 450 * scale
+    
+    # 층수에 따라 유동적으로 층별 높이 결정 (고정 높이 내에 배치)
+    num_f = len(floor_heights)
+    top_margin = 50 * scale
+    bottom_margin = 100 * scale
+    soil_h_px = 60 * scale
+    foot_h_px = 50 * scale
+    
+    # 가용 높이 계산 후 층별 높이 분배
+    available_h = img_h - top_margin - bottom_margin - soil_h_px - foot_h_px
+    row_h_px = available_h / num_f
+    
+    img = Image.new("RGB", (img_w, img_h), color="white")
+    draw = ImageDraw.Draw(img)
+    
+    try: font_size = 18 if num_f <= 2 else (16 if num_f <= 4 else 14)
+    except: font_size = 15
+    try: font = ImageFont.truetype("malgunbd.ttf", font_size * scale) if platform.system() == "Windows" else ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial Bold.ttf", (font_size-2) * scale)
+    except: font = ImageFont.load_default()
+    
+    gl_y = top_margin
+    draw.line([(30 * scale, gl_y), (320 * scale, gl_y)], fill="black", width=2 * scale)
+    draw.text((325 * scale, gl_y), "GL", fill="red", font=font, anchor="lm")
+    
+    # Soil (건물 너비를 100 -> 250으로 키움)
+    draw.rectangle([100 * scale, gl_y, 300 * scale, gl_y + soil_h_px], fill="#F0F0F0", outline="black", width=1 * scale)
+    draw.line([(80 * scale, gl_y), (80 * scale, gl_y + soil_h_px)], fill="black", width=1 * scale)
+    draw.text((75 * scale, gl_y + soil_h_px/2), f"{h_soil:,}", fill="black", font=font, anchor="rm")
+    draw.text((200 * scale, gl_y + soil_h_px/2), "흙높이", fill="#666666", font=font, anchor="mm")
+    
+    curr_y = gl_y + soil_h_px
+    # Floors
+    for i, fh in enumerate(floor_heights):
+        draw.rectangle([100 * scale, curr_y, 300 * scale, curr_y + row_h_px], outline="black", width=1 * scale)
+        draw.line([(100 * scale, curr_y), (300 * scale, curr_y)], fill="black", width=3 * scale)
+        draw.line([(80 * scale, curr_y), (80 * scale, curr_y + row_h_px)], fill="black", width=1 * scale)
+        draw.text((75 * scale, curr_y + row_h_px/2), f"{fh:,}", fill="black", font=font, anchor="rm")
+        draw.text((200 * scale, curr_y + row_h_px/2), f"B{i+1}F", fill="#666666", font=font, anchor="mm")
+        curr_y += row_h_px
+        
+    # Footing
+    foot_h = 50 * scale
+    draw.rectangle([50 * scale, curr_y, 350 * scale, curr_y + foot_h], fill="#E0E0E0", outline="black", width=1 * scale)
+    draw.text((200 * scale, curr_y + foot_h/2), f"기초 ({fd:,})", fill="black", font=font, anchor="mm")
 
-# 사용 안내 문구 추가
-st.info("""
-**📢 시공단계별 부력 검토 안내**
-* 각 층의 **'시공 완료' 체크박스**를 활용하여 현재 공정을 설정해 주세요.
-* '체크를 해제(OFF)'하면 해당 층은 아직 시공되지 않은 것으로 간주되어 '자중 계산에서 제외' 됩니다. 
-* 실제 현장 상황에 맞춰 체크박스를 조정하여 부력 안전율을 확인하시기 바랍니다.
-""")
+    # GWL 위치 계산
+    actual_depth = gl_minus * 1000
+    total_soil_floor_h = h_soil + sum(floor_heights)
+    total_dwg_h = soil_h_px + (len(floor_heights) * row_h_px)
+    
+    gwl_y = gl_y
+    if actual_depth <= h_soil:
+        ratio = actual_depth / h_soil if h_soil > 0 else 0
+        gwl_y = gl_y + (ratio * soil_h_px)
+    else:
+        gwl_y = gl_y + soil_h_px
+        rem = actual_depth - h_soil
+        for fh in floor_heights:
+            if rem <= fh: gwl_y += (rem / fh * row_h_px); rem = 0; break
+            else: gwl_y += row_h_px; rem -= fh
+        if rem > 0: gwl_y += (min(rem / 1000, 1.0) * foot_h)
 
-c1, _, c2 = st.columns([10, 2, 10])
-with c1:
-    st.subheader("[평면 정보]")
-    st.image(overlay_text("plan.png", [((550, 30), x_dist, False), ((30, 500), y_dist, True)]), width=300)
-with c2:
-    st.subheader("[층고 정보]")
-    st.image(overlay_text("section.png", [((180, 100), h_soil, False)] + [((180, 310 if i == 0 else 580), fh, False) for i, fh in enumerate(floor_heights[:2])]), width=350)
+    # GWL 그리기
+    draw.line([(310 * scale, gwl_y), (340 * scale, gwl_y)], fill="blue", width=1 * scale)
+    tri_h = 10 * scale
+    draw.polygon([(325 * scale, gwl_y), ((325-6)*scale, gwl_y-tri_h), ((325+6)*scale, gwl_y-tri_h)], outline="blue", fill="white")
+    draw.line([(321 * scale, gwl_y + 4 * scale), (329 * scale, gwl_y + 4 * scale)], fill="blue", width=1 * scale)
+    draw.text((345 * scale, gwl_y), f"(GL-{gl_minus})", fill="blue", font=font, anchor="lm")
+        
+    return img
+
+# 메인 타이틀
+st.title("🏗️ 시공단계 부력 검토")
+
+c_img1, c_img2 = st.columns([1, 1], gap="large")
+with c_img1:
+    st.markdown("<h3 style='text-align:center; color:#1e3a8a; border-bottom:none; margin-bottom:0px;'>[평면 정보]</h3>", unsafe_allow_html=True)
+    st.image(overlay_text("plan.png", [((550, 30), x_dist, False), ((30, 500), y_dist, True)]), use_container_width=True)
+with c_img2:
+    st.markdown("<h3 style='text-align:center; color:#1e3a8a; border-bottom:none; margin-bottom:0px;'>[층고 정보]</h3>", unsafe_allow_html=True)
+    st.image(draw_dynamic_section(h_soil, floor_heights, fd, gl_minus), use_container_width=True)
+
+st.info("💡 각 지하층 탭에서 시공 완료 여부(체크박스)를 선택하여 단계별 검토가 가능합니다.")
 
 # ---------------------------------------------------------
 # 1. 설계하중 설정
@@ -126,69 +258,89 @@ ld_c1, ld_c2, ld_c3 = st.columns(3)
 with ld_c1:
     with st.container(border=True):
         st.markdown("**지붕층 (Roof)**")
-        t_topping = st.number_input("Topping 두께(mm)", value=1100, key="ld_t_top")
-        t_plain_r = st.number_input("무근 Con'c 두께(mm)", value=100, key="ld_t_pr_r")
-        t_slab_r = st.number_input("구조 슬래브 두께(mm)", value=250, key="ld_t_slab_r")
-        l_cl_r = st.number_input("Ceiling 하중(kN/㎡)", value=0.3, key="ld_l_cl_r")
+        t_topping = st.number_input("Topping (mm)", value=1100, key="ld_t_top")
+        t_plain_r = st.number_input("무근 Con'c (mm)", value=100, key="ld_t_pr_r")
+        t_slab_r = st.number_input("슬래브 두께 (mm)", value=250, key="ld_t_slab_r")
+        l_cl_r = st.number_input("Ceiling (kN/㎡)", value=0.3, key="ld_l_cl_r")
         roof_load = (18 * t_topping / 1000) + (23 * t_plain_r / 1000) + (unit_c * t_slab_r / 1000) + l_cl_r
-        st.info(f"지붕층: {roof_load:.2f} kN/㎡")
+        st.caption(f"로드: {roof_load:.2f} kN/㎡")
 with ld_c2:
     with st.container(border=True):
         st.markdown("**지하층 일반 (B1F)**")
-        t_slab_mid = st.number_input("구조 슬래브 두께(mm)", value=150, key="ld_t_slab_mid")
-        l_cl_f = st.number_input("Ceiling 하중(kN/㎡)", value=0.3, key="ld_l_cl_f")
+        t_slab_mid = st.number_input("슬래브 두께 (mm)", value=150, key="ld_t_slab_mid")
+        l_cl_f = st.number_input("Ceiling (kN/㎡)", value=0.3, key="ld_l_cl_f")
         floor_load_mid = (unit_c * t_slab_mid / 1000) + l_cl_f
-        st.info(f"일반층: {floor_load_mid:.2f} kN/㎡")
+        st.caption(f"로드: {floor_load_mid:.2f} kN/㎡")
 with ld_c3:
     with st.container(border=True):
-        st.markdown("**최하층 (B2F/기초)**")
-        t_plain_bot = st.number_input("무근 Con'c 두께(mm)", value=100, key="ld_t_plain_bot")
-        t_slab_bot = st.number_input("구조 슬래브 두께(mm)", value=400, key="ld_t_slab_bot")
+        st.markdown("**최하층 (Bottom)**")
+        t_plain_bot = st.number_input("무근 Con'c (mm)", value=100, key="ld_t_plain_bot")
+        t_slab_bot = st.number_input("슬래브 두께 (mm)", value=400, key="ld_t_slab_bot")
         floor_load_bot = (23 * t_plain_bot / 1000) + (unit_c * t_slab_bot / 1000)
-        st.info(f"최하층: {floor_load_bot:.2f} kN/㎡")
+        st.caption(f"로드: {floor_load_bot:.2f} kN/㎡")
 
 # ---------------------------------------------------------
 # 2. 부재정보 및 시공단계 설정
 # ---------------------------------------------------------
 st.markdown("<h2 class='section-title'>2. 부재정보 및 시공단계 설정</h2>", unsafe_allow_html=True)
-st.markdown('<div class="sub-title">지붕층 (Roof)</div>', unsafe_allow_html=True)
-is_roof_done = st.checkbox("지붕층 시공 완료", value=True, key="is_roof_done_chk")
-bc1, bc2, bc3 = st.columns(3)
-with bc1: 
-    with st.container(border=True):
-        st.markdown("**B1**"); bw_rb1 = st.number_input("폭", 500, key="brb1"); bh_rb1 = st.number_input("높이", 900, key="hrb1")
-with bc2: 
-    with st.container(border=True):
-        st.markdown("**G1**"); bw_rg1 = st.number_input("폭", 500, key="brg1"); bh_rg1 = st.number_input("높이", 900, key="hrg1")
-with bc3: 
-    with st.container(border=True):
-        st.markdown("**G2**"); bw_rg2 = st.number_input("폭", 700, key="brg2"); bh_rg2 = st.number_input("높이", 900, key="hrg2")
+
+tab_names = ["지붕층 (Roof)"] + [f"지하 {i+1}층 (B{i+1}F)" for i in range(num_floors)] + ["기초 (Footing)"]
+tabs = st.tabs(tab_names)
+
+with tabs[0]:
+    is_roof_done = st.checkbox("지붕층 시공 완료", value=True, key="is_roof_done_chk")
+    bc1, bc2, bc3 = st.columns(3)
+    with bc1: 
+        with st.container(border=True):
+            st.markdown("**B1**")
+            w1, h1 = st.columns(2)
+            bw_rb1 = w1.number_input("폭", 500, key="brb1"); bh_rb1 = h1.number_input("높이", 900, key="hrb1")
+    with bc2: 
+        with st.container(border=True):
+            st.markdown("**G1**")
+            w2, h2 = st.columns(2)
+            bw_rg1 = w2.number_input("폭", 500, key="brg1"); bh_rg1 = h2.number_input("높이", 900, key="hrg1")
+    with bc3: 
+        with st.container(border=True):
+            st.markdown("**G2**")
+            w3, h3 = st.columns(2)
+            bw_rg2 = w3.number_input("폭", 700, key="brg2"); bh_rg2 = h3.number_input("높이", 900, key="hrg2")
 
 floor_inputs = []
 for i in range(num_floors):
-    st.markdown(f'<div class="sub-title">지하 {i+1}층 (B{i+1}F)</div>', unsafe_allow_html=True)
-    is_f_done = st.checkbox(f"지하 {i+1}층 시공 완료", value=True, key=f"f_done_{i}")
-    curr_tf, curr_fl, curr_tp, curr_lc = (t_slab_mid, floor_load_mid, 0, l_cl_f) if i < num_floors-1 else (t_slab_bot, floor_load_bot, t_plain_bot, 0)
-    fc1, fc2 = st.columns([2.5, 0.7])
-    with fc1:
-        fbc1, fbc2, fbc3 = st.columns(3)
-        with fbc1: 
+    with tabs[i+1]:
+        is_f_done = st.checkbox(f"지하 {i+1}층 시공 완료", value=True, key=f"f_done_{i}")
+        curr_tf, curr_fl, curr_tp, curr_lc = (t_slab_mid, floor_load_mid, 0, l_cl_f) if i < num_floors-1 else (t_slab_bot, floor_load_bot, t_plain_bot, 0)
+        fc1, fc2 = st.columns([2.5, 0.7])
+        with fc1:
+            fbc1, fbc2, fbc3 = st.columns(3)
+            with fbc1: 
+                with st.container(border=True):
+                    st.markdown("**B1**")
+                    w_b, h_b = st.columns(2)
+                    bw_b1 = w_b.number_input("폭", 400, key=f"bb1_{i}"); bh_b1 = h_b.number_input("높이", 600, key=f"hb1_{i}")
+            with fbc2:
+                with st.container(border=True):
+                    st.markdown("**G1**")
+                    w_g1, h_g1 = st.columns(2)
+                    bw_g1 = w_g1.number_input("폭", 400, key=f"bg1_{i}"); bh_g1 = h_g1.number_input("높이", 600, key=f"hg1_{i}")
+            with fbc3:
+                with st.container(border=True):
+                    st.markdown("**G2**")
+                    w_g2, h_g2 = st.columns(2)
+                    bw_g2 = w_g2.number_input("폭", 500, key=f"bg2_{i}"); bh_g2 = h_g2.number_input("높이", 600, key=f"hg2_{i}")
+        with fc2:
             with st.container(border=True):
-                st.markdown("**B1**"); bw_b1 = st.number_input("폭", 400, key=f"bb1_{i}"); bh_b1 = st.number_input("높이", 600, key=f"hb1_{i}")
-        with fbc2:
-            with st.container(border=True):
-                st.markdown("**G1**"); bw_g1 = st.number_input("폭", 400, key=f"bg1_{i}"); bh_g1 = st.number_input("높이", 600, key=f"hg1_{i}")
-        with fbc3:
-            with st.container(border=True):
-                st.markdown("**G2**"); bw_g2 = st.number_input("폭", 500, key=f"bg2_{i}"); bh_g2 = st.number_input("높이", 600, key=f"hg2_{i}")
-    with fc2:
-        with st.container(border=True):
-            st.markdown("**기둥**"); bw_c = st.number_input("가로", 500, key=f"bc_{i}"); bh_c = st.number_input("세로", 700, key=f"hc_{i}")
-    floor_inputs.append({"tf": curr_tf, "fl": curr_fl, "tp": curr_tp, "lc": curr_lc, "bw_b1": bw_b1, "bh_b1": bh_b1, "bw_g1": bw_g1, "bh_g1": bh_g1, "bw_g2": bw_g2, "bh_g2": bh_g2, "bw_c": bw_c, "bh_c": bh_c, "done": is_f_done})
+                st.markdown("**기둥**")
+                w_c, h_c = st.columns(2)
+                bw_c = w_c.number_input("가로", 500, key=f"bc_{i}"); bh_c = h_c.number_input("세로", 700, key=f"hc_{i}")
+        floor_inputs.append({"tf": curr_tf, "fl": curr_fl, "tp": curr_tp, "lc": curr_lc, "bw_b1": bw_b1, "bh_b1": bh_b1, "bw_g1": bw_g1, "bh_g1": bh_g1, "bw_g2": bw_g2, "bh_g2": bh_g2, "bw_c": bw_c, "bh_c": bh_c, "done": is_f_done})
 
-st.markdown('<div class="sub-title">기초 (Footing)</div>', unsafe_allow_html=True)
-ftc1, ftc2, ftc3 = st.columns(3)
-fw = ftc1.number_input("기초 가로(mm)", 3000, key="ft_w"); flv = ftc2.number_input("기초 세로(mm)", 3000, key="ft_l"); fd = ftc3.number_input("기초 두께(mm)", 900, key="ft_d")
+with tabs[-1]:
+    st.info("기초는 시공 완료를 가정합니다.")
+    ftc1, ftc2 = st.columns(2)
+    fw = ftc1.number_input("기초 가로(mm)", 3000, key="ft_w"); flv = ftc2.number_input("기초 세로(mm)", 3000, key="ft_l")
+    st.caption(f"기초 두께: {fd} mm (사이드바에서 수정 가능)")
 
 # ---------------------------------------------------------
 # 계산 로직
@@ -239,6 +391,7 @@ if fs_val >= target_fs:
     st.markdown(f"<div class='result-container-ok'>판정 : OK ({fs_val:.4f} ≥ {target_fs})</div>", unsafe_allow_html=True)
 else:
     st.markdown(f"<div class='result-container-ng'>판정 : NG ({fs_val:.4f} < {target_fs})</div>", unsafe_allow_html=True)
+    st.error("⚠️ 부력 대책 수립이 필요합니다.")
 
 # ---------------------------------------------------------
 # 4. 데이터 보기 및 PDF 출력용 섹션
